@@ -1,0 +1,12 @@
+cflags = -fPIC -g -c -Wall
+rule cc
+  command = gcc $cflags -c $in -o $out
+rule dist
+  command = gcc -shared -o lib$out.so *.o -lc
+rule run
+  command = export include_dir=`pwd` && echo "Library directory: "$$include_dir && export DYLD_LIBRARY_PATH=$$include_dir && export LD_LIBRARY_PATH=$$include_dir && cd $$GOPATH && CGO_CFLAGS="-I$$include_dir" CGO_LDFLAGS="-L$$include_dir -lmk_lib" go build m.go
+build foo.o: cc foo.c
+build bar.o: cc bar.c
+build mk_lib: dist | foo.o bar.o
+build final: run | mk_lib
+default final
