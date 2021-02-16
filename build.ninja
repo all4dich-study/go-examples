@@ -1,0 +1,4 @@
+rule build
+  command = go build -o $out github.com/all4dich/golang/buildanalysis
+build buildanalysis_new: build src/github.com/all4dich/golang/buildanalysis/buildanalysis.go
+default buildanalysis_new
